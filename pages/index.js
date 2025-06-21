@@ -49,7 +49,7 @@ export default function Home() {
           background-color: rgba(224, 224, 224, 0.85);
         }
       `}</style>
-      <img src="/logo.svg" alt="Scout Logo" width={150} height={150} style={{ marginBottom: '2rem', maxWidth: '80vw', height: 'auto' }} />
+      <img src="/assets/logo_scout.jpg" alt="Scout badge with a red and green triangular emblem, white fleur-de-lis symbol, and a gray upper section showing a green landscape with trees, a house, and a factory. Text reads: Grupo Guías y Scouts Santa Cecilia 12 de Julio 1963. The tone is formal and commemorative." width={150} height={150} style={{ marginBottom: '2rem', maxWidth: '80vw', height: 'auto' }} />
       <h1 style={{ fontSize: '3rem', marginBottom: '1rem', textShadow: '2px 2px 4px rgba(0,0,0,0.7)' }}>Sistema de Gestión Scout</h1>
       <p style={{ fontSize: '1.25rem', marginBottom: '3rem', textShadow: '1px 1px 3px rgba(0,0,0,0.6)' }}>
         Bienvenido al sistema de gestión. Haga clic en el botón para ingresar.
