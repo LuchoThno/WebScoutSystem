@@ -524,7 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateNavigation();
             utils.showAlert('Sesión cerrada exitosamente', 'success');
             setTimeout(() => {
-                window.location.href = '/index.html';
+        window.location.href = '/';
             }, 1000);
         }
     }
