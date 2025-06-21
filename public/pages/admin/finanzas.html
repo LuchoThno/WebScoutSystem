@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Grupo Scout - Gestión Financiera</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="../../css/components.css" />
+    <link rel="stylesheet" href="../../css/responsive.css" />
+    <link rel="stylesheet" href="../../css/admin-tabs.css" />
+    <link rel="stylesheet" href="../../css/finanzas.css" />
+    <link rel="stylesheet" href="../../css/menu-toggle-fix.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <button class="menu-toggle" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="logo">Gestión Financiera</div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <h1>Gestión Financiera</h1>
+            <p>Control y seguimiento de las finanzas del grupo</p>
+        </section>
+
+        <section class="admin-tabs-section">
+            <div class="container">
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
+                        <button class="tab-btn" data-tab="transacciones">💰 Transacciones</button>
+                        <button class="tab-btn" data-tab="presupuestos">📋 Presupuestos</button>
+                        <button class="tab-btn" data-tab="reportes">📈 Reportes</button>
+                    </div>
+
+                    <!-- Tab 1: Dashboard Financiero -->
+                    <div class="tab-content active" id="dashboard">
+                        <div class="card">
+                            <h3>📊 Resumen Financiero</h3>
+                            <div class="data-grid">
+                                <div class="data-card">
+                                    <div class="data-card-header">
+                                        <h4 class="data-card-title">Balance Total</h4>
+                                        <span class="status-badge active">Activo</span>
+                                    </div>
+                                    <div class="metric-value">
+                                        <span class="number" id="totalBalance">$0</span>
+                                        <span class="trend positive" id="balanceTrend">↗ +5% este mes</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="data-card">
+                                    <div class="data-card-header">
+                                        <h4 class="data-card-title">Ingresos del Mes</h4>
+                                        <span class="status-badge active">Positivo</span>
+                                    </div>
+                                    <div class="metric-value">
+                                        <span class="number" id="monthlyIncome">$0</span>
+                                        <span class="trend positive" id="incomeTrend">↗ +12%</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="data-card">
+                                    <div class="data-card-header">
+                                        <h4 class="data-card-title">Gastos del Mes</h4>
+                                        <span class="status-badge pending">Controlado</span>
+                                    </div>
+                                    <div class="metric-value">
+                                        <span class="number" id="monthlyExpenses">$0</span>
+                                        <span class="trend neutral" id="expensesTrend">→ Sin cambios</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="data-card">
+                                    <div class="data-card-header">
+                                        <h4 class="data-card-title">Presupuesto Restante</h4>
+                                        <span class="status-badge active">Disponible</span>
+                                    </div>
+                                    <div class="metric-value">
+                                        <span class="number" id="remainingBudget">$0</span>
+                                        <span class="trend positive" id="budgetTrend">↗ 75% disponible</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>📈 Flujo de Caja Mensual</h3>
+                            <div id="cashFlowChart" class="chart-container">
+                                <canvas id="financeChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Transacciones -->
+                    <div class="tab-content" id="transacciones">
+                        <div class="card">
+                            <h3>💰 Nueva Transacción</h3>
+                            <form id="transactionForm" class="enhanced-form">
+                                <div class="form-section">
+                                    <legend>Detalles de la Transacción</legend>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="transactionType">Tipo</label>
+                                            <select id="transactionType" name="type" class="form-control" required>
+                                                <option value="">Seleccionar tipo</option>
+                                                <option value="income">Ingreso</option>
+                                                <option value="expense">Gasto</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="transactionCategory">Categoría</label>
+                                            <select id="transactionCategory" name="category" class="form-control" required>
+                                                <option value="">Seleccionar categoría</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="transactionAmount">Monto</label>
+                                            <input type="number" id="transactionAmount" name="amount" class="form-control" step="1" min="0" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="transactionDate">Fecha</label>
+                                            <input type="date" id="transactionDate" name="date" class="form-control" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="transactionDescription">Descripción</label>
+                                        <input type="text" id="transactionDescription" name="description" class="form-control" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="transactionNotes">Notas Adicionales</label>
+                                        <textarea id="transactionNotes" name="notes" class="form-control" rows="2"></textarea>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary">Registrar Transacción</button>
+                                    <button type="reset" class="btn btn-secondary">Limpiar</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>📋 Historial de Transacciones</h3>
+                            <div class="controls-bar">
+                                <select id="filterTransactionType" class="form-control filter-select" aria-label="Filtrar por tipo de transacción" title="Filtrar por tipo de transacción">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="income">Ingresos</option>
+                                    <option value="expense">Gastos</option>
+                                </select>
+                                <select id="filterTransactionCategory" class="form-control filter-select" aria-label="Filtrar por categoría de transacción" title="Filtrar por categoría de transacción">
+                                    <option value="">Todas las categorías</option>
+                                </select>
+                                <input type="month" id="filterTransactionMonth" class="form-control" aria-label="Filtrar por mes de transacción" title="Filtrar por mes de transacción" />
+                                <div class="controls-actions">
+                                    <button class="btn btn-secondary" id="exportTransactionsBtn" title="Exportar transacciones">Exportar</button>
+                                    <button class="btn btn-secondary" id="clearTransactionFiltersBtn" title="Limpiar filtros">Limpiar</button>
+                                </div>
+                            </div>
+                            <div id="transactionHistory" class="transactions-list">
+                                <!-- Transactions will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Presupuestos -->
+                    <div class="tab-content" id="presupuestos">
+                        <div class="card">
+                            <h3>📋 Nuevo Presupuesto</h3>
+                            <form id="budgetForm" class="enhanced-form">
+                                <div class="form-section">
+                                    <legend>Configuración del Presupuesto</legend>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="budgetCategory">Categoría</label>
+                                            <select id="budgetCategory" name="category" class="form-control" required>
+                                                <option value="">Seleccionar categoría</option>
+                                                <option value="actividades">Actividades</option>
+                                                <option value="equipamiento">Equipamiento</option>
+                                                <option value="transporte">Transporte</option>
+                                                <option value="alimentacion">Alimentación</option>
+                                                <option value="materiales">Materiales</option>
+                                                <option value="mantenimiento">Mantenimiento</option>
+                                                <option value="servicios">Servicios</option>
+                                                <option value="administrativos">Administrativos</option>
+                                                <option value="capacitacion">Capacitación</option>
+                                                <option value="otros-gastos">Otros</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="budgetAmount">Presupuesto Mensual</label>
+                                            <input type="number" id="budgetAmount" name="amount" class="form-control" step="1" min="0" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="budgetPeriod">Período</label>
+                                            <select id="budgetPeriod" name="period" class="form-control" required>
+                                                <option value="monthly">Mensual</option>
+                                                <option value="quarterly">Trimestral</option>
+                                                <option value="yearly">Anual</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="budgetStartDate">Fecha de Inicio</label>
+                                            <input type="date" id="budgetStartDate" name="startDate" class="form-control" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="budgetDescription">Descripción</label>
+                                        <textarea id="budgetDescription" name="description" class="form-control" rows="2"></textarea>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary">Crear Presupuesto</button>
+                                    <button type="reset" class="btn btn-secondary">Limpiar</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>📊 Presupuestos Activos</h3>
+                            <div id="budgetsList" class="budget-list">
+                                <!-- Budget items will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Reportes -->
+                    <div class="tab-content" id="reportes">
+                        <div class="card">
+                            <h3>📈 Generar Reportes</h3>
+                            <div class="data-grid">
+                                <div class="data-card">
+                                    <div class="data-card-header">
+                                        <h4 class="data-card-title">Reporte Mensual</h4>
+                                    </div>
+                                    <p>Resumen completo de ingresos y gastos del mes</p>
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary" id="generateMonthlyReportBtn">Generar</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="data-card">
+                                    <div class="data-card-header">
+                                        <h4 class="data-card-title">Reporte por Categoría</h4>
+                                    </div>
+                                    <p>Análisis detallado por categorías de gasto</p>
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary" id="generateCategoryReportBtn">Generar</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="data-card">
+                                    <div class="data-card-header">
+                                        <h4 class="data-card-title">Reporte de Presupuestos</h4>
+                                    </div>
+                                    <p>Análisis de cumplimiento de presupuestos</p>
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary" id="generateBudgetReportBtn">Generar</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="data-card">
+                                    <div class="data-card-header">
+                                        <h4 class="data-card-title">Reporte Personalizado</h4>
+                                    </div>
+                                    <p>Configura tu propio reporte con fechas específicas</p>
+                                    <div class="form-row">
+                                        <input type="date" id="customStartDate" class="form-control" aria-label="Fecha inicio para reporte personalizado" placeholder="Fecha inicio" />
+                                        <input type="date" id="customEndDate" class="form-control" aria-label="Fecha fin para reporte personalizado" placeholder="Fecha fin" />
+                                    </div>
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary" id="generateCustomReportBtn">Generar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>📊 Reportes Generados</h3>
+                            <div id="reportContainer" class="report-container">
+                                <p class="no-content">Selecciona un tipo de reporte para generar</p>
+                            </div>
+                            <div class="report-actions" style="margin-top: 20px; display: none;" id="reportActions">
+                                <button class="btn btn-primary" id="exportReportPDFBtn">Exportar a PDF</button>
+                                <button class="btn btn-secondary" id="exportReportCSVBtn">Exportar a Excel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Grupo Scout. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="../../js/utils.js"></script>
+    <script type="module" src="../../js/storage.js"></script>
+    <script type="module" src="../../js/navigation.js"></script>
+    <script type="module" src="../../js/supabase-client.js"></script>
+    <script type="module" src="../../js/admin-tabs.js"></script>
+    <script type="module" src="../../js/admin/finanzas.js"></script>
+</body>
+</html>

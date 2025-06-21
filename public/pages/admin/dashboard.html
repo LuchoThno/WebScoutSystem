@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Grupo Scout - Panel de Administración</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="../../css/components.css" />
+    <link rel="stylesheet" href="../../css/responsive.css" />
+    <link rel="stylesheet" href="../../css/admin-tabs.css" />
+    <link rel="stylesheet" href="../../css/dashboard.css" />
+    <link rel="stylesheet" href="../../css/menu-toggle-fix.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <button class="menu-toggle" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="logo">Panel de Administración</div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <h1>Panel de Administración</h1>
+            <p>Gestión integral del Grupo Scout</p>
+        </section>
+
+        <section class="admin-tabs-section">
+            <div class="container">
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
+                        <button class="tab-btn" data-tab="estadisticas">📈 Estadísticas</button>
+                        <button class="tab-btn" data-tab="actividad">📋 Actividad Reciente</button>
+                        <button class="tab-btn" data-tab="acciones">🎯 Acciones Rápidas</button>
+                    </div>
+
+                    <!-- Tab 1: Dashboard Principal -->
+                    <div class="tab-content active" id="dashboard">
+                        <div class="card">
+                            <h3>Resumen General</h3>
+                            <div class="dashboard-grid">
+                                <div class="data-card">
+                                    <div class="data-card-header">
+                                        <h4 class="data-card-title">Miembros Activos</h4>
+                                        <span class="status-badge active">Activo</span>
+                                    </div>
+                                    <div class="metric-value">
+                                        <span class="number" id="totalMembers">0</span>
+                                        <span class="trend" id="membersTrend"></span>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Distribución por grupos</span>
+                                        </div>
+                                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="data-card">
+                                    <div class="data-card-header">
+                                        <h4 class="data-card-title">Actividades Programadas</h4>
+                                        <span class="status-badge pending">Pendiente</span>
+                                    </div>
+                                    <div class="metric-value">
+                                        <span class="number" id="totalActivities">0</span>
+                                        <span class="trend" id="activitiesTrend"></span>
+                                    </div>
+                                    <p>Próxima actividad: <span id="nextActivity">-</span></p>
+                                </div>
+                                
+                                <div class="data-card">
+                                    <div class="data-card-header">
+                                        <h4 class="data-card-title">Dirigentes</h4>
+                                        <span class="status-badge active">Activo</span>
+                                    </div>
+                                    <div class="metric-value">
+                                        <span class="number" id="totalLeaders">0</span>
+                                        <span class="trend" id="leadersTrend"></span>
+                                    </div>
+                                    <p>Documentación completa: <span id="completeDocumentation">0%</span></p>
+                                </div>
+                                
+                                <div class="data-card">
+                                    <div class="data-card-header">
+                                        <h4 class="data-card-title">Balance Financiero</h4>
+                                        <span class="status-badge" id="balanceStatus">-</span>
+                                    </div>
+                                    <div class="metric-value">
+                                        <span class="number" id="totalBalance">$0</span>
+                                        <span class="trend" id="balanceTrend"></span>
+                                    </div>
+                                    <p>Presupuesto disponible: <span id="availableBudget">$0</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>Gráfico de Actividad</h3>
+                            <div class="chart-container" style="position: relative; height:300px;">
+                                <canvas id="activityChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>Mensajes de Contacto</h3>
+                            <div id="contactMessages"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Estadísticas Detalladas -->
+                    <div class="tab-content" id="estadisticas">
+                        <div class="card">
+                            <h3>Estadísticas por Grupo</h3>
+                            <div class="chart-container" style="position: relative; height:300px;">
+                                <canvas id="groupsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>Asistencia Mensual</h3>
+                            <div class="chart-container" style="position: relative; height:300px;">
+                                <canvas id="attendanceChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>Resumen Financiero</h3>
+                            <div class="chart-container" style="position: relative; height:300px;">
+                                <canvas id="financialChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Actividad Reciente -->
+                    <div class="tab-content" id="actividad">
+                        <div class="card">
+                            <h3>Registro de Actividad</h3>
+                            <div class="search-filter">
+                                <input type="text" id="searchActivity" placeholder="Buscar actividad..." class="form-control" />
+                                <label for="filterActivityType" class="visually-hidden">Filtrar por tipo de actividad</label>
+                                <select id="filterActivityType" class="form-control" title="Filtrar por tipo de actividad">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="login">Inicio de sesión</option>
+                                    <option value="create">Creación</option>
+                                    <option value="update">Actualización</option>
+                                    <option value="delete">Eliminación</option>
+                                </select>
+                                <label for="filterActivityUser" class="visually-hidden">Filtrar por usuario</label>
+                                <select id="filterActivityUser" class="form-control">
+                                    <option value="">Todos los usuarios</option>
+                                </select>
+                            </div>
+                            <div id="activityLog" class="activity-log"></div>
+                        </div>
+
+                        <div class="card">
+                            <h3>Cambios Recientes</h3>
+                            <div id="recentChanges" class="recent-changes"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Acciones Rápidas -->
+                    <div class="tab-content" id="acciones">
+                        <div class="card">
+                            <h3>Acciones Rápidas</h3>
+                            <div class="quick-actions-grid">
+                                <div class="action-card">
+                                    <h4>Gestión de Miembros</h4>
+                                    <div class="action-buttons">
+                                        <a href="gestion-miembros.html" class="btn btn-primary">Gestionar Miembros</a>
+                                        <a href="gestion-miembros.html#asistencia" class="btn btn-secondary">Control de Asistencia</a>
+                                        <a href="gestion-miembros.html#fichas" class="btn btn-secondary">Fichas Médicas</a>
+                                    </div>
+                                </div>
+
+                                <div class="action-card">
+                                    <h4>Planificación</h4>
+                                    <div class="action-buttons">
+                                        <a href="planificacion.html" class="btn btn-primary">Calendario</a>
+                                        <a href="planificacion.html#programas" class="btn btn-secondary">Programas Educativos</a>
+                                        <a href="planificacion.html#campamentos" class="btn btn-secondary">Campamentos</a>
+                                    </div>
+                                </div>
+
+                                <div class="action-card">
+                                    <h4>Recursos</h4>
+                                    <div class="action-buttons">
+                                        <a href="recursos.html" class="btn btn-primary">Inventario</a>
+                                        <a href="recursos.html#equipamiento" class="btn btn-secondary">Equipamiento</a>
+                                        <a href="recursos.html#locaciones" class="btn btn-secondary">Locaciones</a>
+                                    </div>
+                                </div>
+
+                                <div class="action-card">
+                                    <h4>Finanzas</h4>
+                                    <div class="action-buttons">
+                                        <a href="finanzas.html#transacciones" class="btn btn-primary">Transacciones</a>
+                                        <a href="finanzas.html#presupuestos" class="btn btn-secondary">Presupuestos</a>
+                                        <a href="finanzas.html#reportes" class="btn btn-secondary">Reportes</a>
+                                    </div>
+                                </div>
+
+                                <div class="action-card">
+                                    <h4>Dirigentes</h4>
+                                    <div class="action-buttons">
+                                        <a href="dirigentes.html" class="btn btn-primary">Gestionar Dirigentes</a>
+                                        <a href="dirigentes.html#reportes" class="btn btn-secondary">Reportes</a>
+                                    </div>
+                                </div>
+
+                                <div class="action-card">
+                                    <h4>Administración</h4>
+                                    <div class="action-buttons">
+                                        <a href="gestion-usuarios.html" class="btn btn-primary">Gestión de Usuarios</a>
+                                        <button id="backupDataBtn" class="btn btn-secondary">Backup de Datos</button>
+                                        <button id="logoutBtn" class="btn btn-secondary">Cerrar Sesión</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>Estado del Sistema</h3>
+                            <div class="system-status">
+                                <div class="status-item">
+                                    <span class="status-label">Base de Datos:</span>
+                                    <span class="status-value" id="dbStatus">Conectando...</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Último Backup:</span>
+                                    <span class="status-value" id="lastBackup">No disponible</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Versión del Sistema:</span>
+                                    <span class="status-value">1.0.0</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Sesión Actual:</span>
+                                    <span class="status-value" id="sessionInfo">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Grupo Scout. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="../../js/utils.js"></script>
+    <script type="module" src="../../js/storage.js"></script>
+    <script type="module" src="../../js/navigation.js"></script>
+    <script type="module" src="../../js/supabase-client.js"></script>
+    <script type="module" src="../../js/admin-tabs.js"></script>
+    <script type="module" src="../../js/admin/dashboard.js"></script>
+</body>
+</html>

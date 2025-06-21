@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupo Scout - Gestión de Miembros</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/admin-tabs.css">
+    <link rel="stylesheet" href="../../css/menu-toggle-fix.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <button class="menu-toggle" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="logo">Gestión de Miembros</div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <h1>Gestión de Miembros</h1>
+            <p>Administración integral de scouts y dirigentes</p>
+        </section>
+
+        <section class="admin-tabs-section">
+            <div class="container">
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="registro">📝 Registro de Scouts</button>
+                        <button class="tab-btn" data-tab="asistencia">📊 Asistencia</button>
+                        <button class="tab-btn" data-tab="fichas">🏥 Fichas Médicas</button>
+                        <button class="tab-btn" data-tab="documentacion">📋 Documentación</button>
+                    </div>
+
+                    <!-- Tab 1: Registro de Scouts -->
+                    <div class="tab-content active" id="registro">
+                        <div class="card">
+                            <h3>Registro de Nuevo Scout</h3>
+                            <form id="scoutForm" class="admin-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="scoutName">Nombre Completo</label>
+                                        <input type="text" id="scoutName" name="name" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="scoutBirthdate">Fecha de Nacimiento</label>
+                                        <input type="date" id="scoutBirthdate" name="birthdate" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="scoutGroup">Grupo Asignado</label>
+                                        <select id="scoutGroup" name="group" class="form-control" required>
+                                            <option value="">Seleccionar grupo</option>
+                                            <option value="bandada">🐦 Bandada Misioneras de la Paz y la Naturaleza</option>
+                                            <option value="manada">🐺 Manada Francisco de Asís</option>
+                                            <option value="compania">🍀 Compañía A.M.T.R</option>
+                                            <option value="tropa">🏕️ Tropa Yucatán</option>
+                                            <option value="avanzada">🌠 Avanzada Ayekan</option>
+                                            <option value="clan">🔥 Clan Peñi Rüpü</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="scoutStatus">Estado</label>
+                                        <select id="scoutStatus" name="status" class="form-control" required>
+                                            <option value="activo">Activo</option>
+                                            <option value="inactivo">Inactivo</option>
+                                            <option value="suspendido">Suspendido</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="parentName">Nombre del Padre/Madre/Tutor</label>
+                                        <input type="text" id="parentName" name="parentName" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="parentPhone">Teléfono de Contacto</label>
+                                        <input type="tel" id="parentPhone" name="parentPhone" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="scoutAddress">Dirección</label>
+                                    <textarea id="scoutAddress" name="address" class="form-control" rows="2" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Registrar Scout</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>Scouts Registrados</h3>
+                            <div class="search-filter">
+                                <input type="text" id="searchScouts" placeholder="Buscar por nombre..." class="form-control">
+                                <select id="filterGroup" class="form-control" aria-label="Filtrar por grupo">
+                                    <option value="">Todos los grupos</option>
+                                    <option value="bandada">🐦 Bandada</option>
+                                    <option value="manada">🐺 Manada</option>
+                                    <option value="compania">🍀 Compañía</option>
+                                    <option value="tropa">🏕️ Tropa</option>
+                                    <option value="avanzada">🌠 Avanzada</option>
+                                    <option value="clan">🔥 Clan</option>
+                                </select>
+                            </div>
+                            <div id="scoutsList" class="members-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Asistencia -->
+                    <div class="tab-content" id="asistencia">
+                        <div class="card">
+                            <h3>Control de Asistencia</h3>
+                            <div class="attendance-controls">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="attendanceDate">Fecha</label>
+                                        <input type="date" id="attendanceDate" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="attendanceGroup">Grupo</label>
+                                <select id="attendanceGroup" class="form-control" aria-label="Filtrar grupo para asistencia">
+                                    <option value="">Todos los grupos</option>
+                                    <option value="bandada">🐦 Bandada</option>
+                                    <option value="manada">🐺 Manada</option>
+                                    <option value="compania">🍀 Compañía</option>
+                                    <option value="tropa">🏕️ Tropa</option>
+                                    <option value="avanzada">🌠 Avanzada</option>
+                                    <option value="clan">🔥 Clan</option>
+                                </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="attendanceActivity">Actividad</label>
+                                        <input type="text" id="attendanceActivity" placeholder="Nombre de la actividad" class="form-control">
+                                    </div>
+                                </div>
+                                <button id="loadAttendance" class="btn btn-primary">Cargar Lista</button>
+                            </div>
+                            <div id="attendanceList" class="attendance-grid"></div>
+                            <button id="saveAttendance" class="btn btn-primary" style="display: none;">Guardar Asistencia</button>
+                        </div>
+
+                        <div class="card">
+                            <h3>Reportes de Asistencia</h3>
+                            <div class="report-controls">
+                                <select id="reportPeriod" class="form-control" aria-label="Seleccionar periodo para reporte de asistencia">
+                                    <option value="week">Esta semana</option>
+                                    <option value="month">Este mes</option>
+                                    <option value="quarter">Este trimestre</option>
+                                    <option value="year">Este año</option>
+                                </select>
+                                <button id="generateAttendanceReport" class="btn btn-secondary">Generar Reporte</button>
+                            </div>
+                            <div id="attendanceReport" class="report-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Fichas Médicas -->
+                    <div class="tab-content" id="fichas">
+                        <div class="card">
+                            <h3>Ficha Médica</h3>
+                            <form id="medicalForm" class="admin-form">
+                                <div class="form-group">
+                                    <label for="medicalScout">Scout</label>
+                                    <select id="medicalScout" name="scoutId" class="form-control" required>
+                                        <option value="">Seleccionar scout</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="bloodType">Tipo de Sangre</label>
+                                        <select id="bloodType" name="bloodType" class="form-control" required>
+                                            <option value="">Seleccionar</option>
+                                            <option value="A+">A+</option>
+                                            <option value="A-">A-</option>
+                                            <option value="B+">B+</option>
+                                            <option value="B-">B-</option>
+                                            <option value="AB+">AB+</option>
+                                            <option value="AB-">AB-</option>
+                                            <option value="O+">O+</option>
+                                            <option value="O-">O-</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="emergencyContact">Contacto de Emergencia</label>
+                                        <input type="text" id="emergencyContact" name="emergencyContact" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="allergies">Alergias</label>
+                                    <textarea id="allergies" name="allergies" class="form-control" rows="3" placeholder="Describir alergias conocidas"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="medications">Medicamentos</label>
+                                    <textarea id="medications" name="medications" class="form-control" rows="3" placeholder="Medicamentos que toma regularmente"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="medicalConditions">Condiciones Médicas</label>
+                                    <textarea id="medicalConditions" name="medicalConditions" class="form-control" rows="3" placeholder="Condiciones médicas relevantes"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="doctorName">Médico de Cabecera</label>
+                                    <input type="text" id="doctorName" name="doctorName" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="doctorPhone">Teléfono del Médico</label>
+                                    <input type="tel" id="doctorPhone" name="doctorPhone" class="form-control">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Guardar Ficha Médica</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>Fichas Médicas Registradas</h3>
+                            <div id="medicalRecords" class="medical-records-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Documentación -->
+                    <div class="tab-content" id="documentacion">
+                        <div class="card">
+                            <h3>Documentación Requerida</h3>
+                            <form id="documentationForm" class="admin-form">
+                                <div class="form-group">
+                                    <label for="docScout">Scout</label>
+                                    <select id="docScout" name="scoutId" class="form-control" required>
+                                        <option value="">Seleccionar scout</option>
+                                    </select>
+                                </div>
+                                <div class="documents-checklist">
+                                    <h4>Documentos Requeridos:</h4>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="documents" value="birth_certificate">
+                                            <span>Certificado de Nacimiento</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="documents" value="id_copy">
+                                            <span>Copia de Cédula/ID</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="documents" value="medical_certificate">
+                                            <span>Certificado Médico</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="documents" value="parent_authorization">
+                                            <span>Autorización de Padres</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="documents" value="photo">
+                                            <span>Fotografía 3x4</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="documents" value="insurance">
+                                            <span>Seguro Médico</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="docNotes">Notas Adicionales</label>
+                                    <textarea id="docNotes" name="notes" class="form-control" rows="3" placeholder="Observaciones sobre la documentación"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Actualizar Documentación</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>Estado de Documentación</h3>
+                            <div class="documentation-filters">
+                                <select id="docStatusFilter" class="form-control" aria-label="Filtrar estado de documentación">
+                                    <option value="">Todos los estados</option>
+                                    <option value="complete">Completa</option>
+                                    <option value="incomplete">Incompleta</option>
+                                    <option value="pending">Pendiente</option>
+                                </select>
+                                <select id="docGroupFilter" class="form-control" aria-label="Filtrar grupo de documentación">
+                                    <option value="">Todos los grupos</option>
+                                    <option value="bandada">🐦 Bandada</option>
+                                    <option value="manada">🐺 Manada</option>
+                                    <option value="compania">🍀 Compañía</option>
+                                    <option value="tropa">🏕️ Tropa</option>
+                                    <option value="avanzada">🌠 Avanzada</option>
+                                    <option value="clan">🔥 Clan</option>
+                                </select>
+                            </div>
+                            <div id="documentationStatus" class="documentation-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Grupo Scout. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="../../js/utils.js"></script>
+    <script type="module" src="../../js/storage.js"></script>
+    <script type="module" src="../../js/navigation.js"></script>
+    <script type="module" src="../../js/admin/gestion-miembros.js"></script>
+</body>
+</html>

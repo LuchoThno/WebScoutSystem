@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupo Scout - Gestión de Dirigentes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/admin-tabs.css">
+    <link rel="stylesheet" href="../../css/dirigentes.css">
+    <link rel="stylesheet" href="../../css/menu-toggle-fix.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <button class="menu-toggle" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="logo">Gestión de Dirigentes</div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <h1>Gestión de Dirigentes</h1>
+            <p>Administración del equipo de liderazgo</p>
+        </section>
+
+        <section class="admin-tabs-section">
+            <div class="container">
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="lista">📋 Lista de Dirigentes</button>
+                        <button class="tab-btn" data-tab="registro">📝 Registrar Dirigente</button>
+                        <button class="tab-btn" data-tab="reportes">📊 Reportes</button>
+                    </div>
+
+                    <!-- Tab 1: Lista de Dirigentes -->
+                    <div class="tab-content active" id="lista">
+                        <div class="card">
+                            <h3>Dirigentes Registrados</h3>
+                            <div class="search-filter">
+                                <input type="text" id="searchDirigentes" placeholder="Buscar dirigente..." class="form-control">
+                                <select id="filterGrupo" class="form-control" aria-label="Filtrar por grupo">
+                                    <option value="">Todos los grupos</option>
+                                    <option value="bandada">🐦 Bandada</option>
+                                    <option value="manada">🐺 Manada</option>
+                                    <option value="compania">🍀 Compañía</option>
+                                    <option value="tropa">🏕️ Tropa</option>
+                                    <option value="avanzada">🌠 Avanzada</option>
+                                    <option value="clan">🔥 Clan</option>
+                                    <option value="grupo-general">Grupo General</option>
+                                </select>
+                                <select id="filterCargo" class="form-control" aria-label="Filtrar por cargo">
+                                    <option value="">Todos los cargos</option>
+                                    <option value="jefe-grupo">Jefe de Grupo</option>
+                                    <option value="subjefe-grupo">Subjefe de Grupo</option>
+                                    <option value="dirigente-seccion">Dirigente de Sección</option>
+                                    <option value="asistente">Asistente</option>
+                                    <option value="especialista">Especialista</option>
+                                    <option value="coordinador">Coordinador</option>
+                                    <option value="tesorero">Tesorero</option>
+                                    <option value="secretario">Secretario</option>
+                                </select>
+                                <select id="filterEstado" class="form-control" aria-label="Filtrar por estado">
+                                    <option value="">Todos los estados</option>
+                                    <option value="activo">Activo</option>
+                                    <option value="inactivo">Inactivo</option>
+                                    <option value="licencia">En Licencia</option>
+                                    <option value="suspendido">Suspendido</option>
+                                </select>
+                            </div>
+                            <div class="table-container">
+                                <table class="data-table" id="dirigentesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Cédula</th>
+                                            <th>Grupo</th>
+                                            <th>Cargo</th>
+                                            <th>Estado</th>
+                                            <th>Documentación</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dirigentesTableBody">
+                                        <!-- Los datos se cargarán dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="action-buttons">
+                                <button id="exportDirigentes" class="btn btn-secondary">Exportar Lista</button>
+                                <button id="reporteDirigentes" class="btn btn-secondary">Generar Reporte</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Registrar Dirigente -->
+                    <div class="tab-content" id="registro">
+                        <div class="card">
+                            <h3>Registro de Dirigente</h3>
+                            <form id="dirigenteForm" class="admin-form">
+                                <!-- Datos Personales -->
+                                <fieldset class="form-section">
+                                    <legend>Datos Personales</legend>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="dirigenteNombre">Nombre Completo</label>
+                                            <input type="text" id="dirigenteNombre" name="nombre" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dirigenteCedula">Cédula/ID</label>
+                                            <input type="text" id="dirigenteCedula" name="cedula" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="dirigenteFechaNacimiento">Fecha de Nacimiento</label>
+                                            <input type="date" id="dirigenteFechaNacimiento" name="fechaNacimiento" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dirigenteGenero">Género</label>
+                                            <select id="dirigenteGenero" name="genero" class="form-control" required aria-label="Seleccionar género">
+                                                <option value="">Seleccionar</option>
+                                                <option value="masculino">Masculino</option>
+                                                <option value="femenino">Femenino</option>
+                                                <option value="otro">Otro</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dirigenteEstadoCivil">Estado Civil</label>
+                                            <select id="dirigenteEstadoCivil" name="estadoCivil" class="form-control" required>
+                                                <option value="">Seleccionar</option>
+                                                <option value="soltero">Soltero/a</option>
+                                                <option value="casado">Casado/a</option>
+                                                <option value="divorciado">Divorciado/a</option>
+                                                <option value="viudo">Viudo/a</option>
+                                                <option value="union-libre">Unión Libre</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dirigenteDireccion">Dirección</label>
+                                        <textarea id="dirigenteDireccion" name="direccion" class="form-control" rows="2" required></textarea>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="dirigenteTelefono">Teléfono</label>
+                                            <input type="tel" id="dirigenteTelefono" name="telefono" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dirigenteEmail">Correo Electrónico</label>
+                                            <input type="email" id="dirigenteEmail" name="email" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dirigenteProfesion">Profesión</label>
+                                            <input type="text" id="dirigenteProfesion" name="profesion" class="form-control">
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <!-- Experiencia Scout -->
+                                <fieldset class="form-section">
+                                    <legend>Experiencia Scout</legend>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="dirigenteInicioScout">Inicio en el Movimiento Scout</label>
+                                            <input type="date" id="dirigenteInicioScout" name="inicioScout" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dirigenteInicioGrupo">Inicio en este Grupo</label>
+                                            <input type="date" id="dirigenteInicioGrupo" name="inicioGrupo" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dirigenteAnosExperiencia">Años de Experiencia</label>
+                                            <input type="number" id="dirigenteAnosExperiencia" name="anosExperiencia" class="form-control" min="0">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dirigenteExperienciaPrevia">Experiencia Previa en otros Grupos</label>
+                                        <textarea id="dirigenteExperienciaPrevia" name="experienciaPrevia" class="form-control" rows="2" placeholder="Describir experiencia en otros grupos scout"></textarea>
+                                    </div>
+                                </fieldset>
+
+                                <!-- Capacitaciones -->
+                                <fieldset class="form-section">
+                                    <legend>Capacitaciones</legend>
+                                    <div class="capacitaciones-list">
+                                        <h4>Capacitaciones Completadas</h4>
+                                        <div class="checkbox-group">
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="capacitaciones" value="preliminar">
+                                                <span>Curso Preliminar</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="capacitaciones" value="basico">
+                                                <span>Curso Básico</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="capacitaciones" value="intermedio">
+                                                <span>Curso Intermedio</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="capacitaciones" value="avanzado">
+                                                <span>Curso Avanzado</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="capacitaciones" value="especialista">
+                                                <span>Curso de Especialista</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="capacitaciones" value="formador">
+                                                <span>Curso de Formador</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="capacitaciones" value="primeros-auxilios">
+                                                <span>Primeros Auxilios</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="capacitaciones" value="salvamento">
+                                                <span>Salvamento Acuático</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="capacitaciones" value="campismo">
+                                                <span>Técnicas de Campismo</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dirigenteOtrasCapacitaciones">Otras Capacitaciones</label>
+                                        <textarea id="dirigenteOtrasCapacitaciones" name="otrasCapacitaciones" class="form-control" rows="2" placeholder="Describir otras capacitaciones relevantes"></textarea>
+                                    </div>
+                                </fieldset>
+
+                                <!-- Grupo Asignado -->
+                                <fieldset class="form-section">
+                                    <legend>Asignación</legend>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="dirigenteGrupoAsignado">Grupo Asignado</label>
+                                            <select id="dirigenteGrupoAsignado" name="grupoAsignado" class="form-control" required>
+                                                <option value="">Seleccionar grupo</option>
+                                                <option value="bandada">🐦 Bandada Misioneras de la Paz y la Naturaleza</option>
+                                                <option value="manada">🐺 Manada Francisco de Asís</option>
+                                                <option value="compania">🍀 Compañía A.M.T.R</option>
+                                                <option value="tropa">🏕️ Tropa Yucatán</option>
+                                                <option value="avanzada">🌠 Avanzada Ayekan</option>
+                                                <option value="clan">🔥 Clan Peñi Rüpü</option>
+                                                <option value="grupo-general">Grupo General</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dirigenteCargo">Cargo</label>
+                                            <select id="dirigenteCargo" name="cargo" class="form-control" required>
+                                                <option value="">Seleccionar cargo</option>
+                                                <option value="jefe-grupo">Jefe de Grupo</option>
+                                                <option value="subjefe-grupo">Subjefe de Grupo</option>
+                                                <option value="dirigente-seccion">Dirigente de Sección</option>
+                                                <option value="asistente">Asistente</option>
+                                                <option value="especialista">Especialista</option>
+                                                <option value="coordinador">Coordinador</option>
+                                                <option value="tesorero">Tesorero</option>
+                                                <option value="secretario">Secretario</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dirigenteEstado">Estado</label>
+                                            <select id="dirigenteEstado" name="estado" class="form-control" required>
+                                                <option value="activo">Activo</option>
+                                                <option value="inactivo">Inactivo</option>
+                                                <option value="licencia">En Licencia</option>
+                                                <option value="suspendido">Suspendido</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <!-- Responsabilidades -->
+                                <fieldset class="form-section">
+                                    <legend>Responsabilidades</legend>
+                                    <div class="form-group">
+                                        <label for="dirigenteResponsabilidades">Responsabilidades Principales</label>
+                                        <textarea id="dirigenteResponsabilidades" name="responsabilidades" class="form-control" rows="3" required placeholder="Describir las responsabilidades principales del dirigente"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dirigenteHabilidades">Habilidades Especiales</label>
+                                        <textarea id="dirigenteHabilidades" name="habilidades" class="form-control" rows="2" placeholder="Habilidades especiales que aporta al grupo"></textarea>
+                                    </div>
+                                </fieldset>
+
+                                <!-- Documentación -->
+                                <fieldset class="form-section">
+                                    <legend>Documentación Requerida</legend>
+                                    <div class="documentos-checklist">
+                                        <div class="checkbox-group">
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="documentos" value="cedula">
+                                                <span>Copia de Cédula/ID</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="documentos" value="certificado-medico">
+                                                <span>Certificado Médico</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="documentos" value="antecedentes">
+                                                <span>Certificado de Antecedentes</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="documentos" value="foto">
+                                                <span>Fotografía 3x4</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="documentos" value="carta-compromiso">
+                                                <span>Carta de Compromiso</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="documentos" value="referencias">
+                                                <span>Referencias Personales</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="documentos" value="certificados-capacitacion">
+                                                <span>Certificados de Capacitación</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dirigenteNotasDocumentacion">Notas sobre Documentación</label>
+                                        <textarea id="dirigenteNotasDocumentacion" name="notasDocumentacion" class="form-control" rows="2" placeholder="Observaciones sobre la documentación"></textarea>
+                                    </div>
+                                </fieldset>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Registrar Dirigente</button>
+                                    <button type="reset" class="btn btn-secondary">Limpiar Formulario</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Reportes -->
+                    <div class="tab-content" id="reportes">
+                        <div class="card">
+                            <h3>Estadísticas de Dirigentes</h3>
+                            <div class="reports-grid">
+                                <div class="report-card">
+                                    <h4>Resumen General</h4>
+                                    <div class="stats-grid">
+                                        <div class="stat-item">
+                                            <span class="stat-number" id="totalDirigentes">0</span>
+                                            <span class="stat-label">Total Dirigentes</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-number" id="dirigentesActivos">0</span>
+                                            <span class="stat-label">Activos</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-number" id="documentacionCompleta">0</span>
+                                            <span class="stat-label">Documentación Completa</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="report-card">
+                                    <h4>Distribución por Grupo</h4>
+                                    <div id="dirigentesPorGrupo">
+                                        <!-- Se cargará dinámicamente -->
+                                    </div>
+                                </div>
+
+                                <div class="report-card">
+                                    <h4>Capacitaciones</h4>
+                                    <div id="capacitacionesStats">
+                                        <!-- Se cargará dinámicamente -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal para editar dirigente -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Dirigente</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="editDirigenteForm" class="admin-form">
+                <!-- El contenido se generará dinámicamente -->
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button type="submit" form="editDirigenteForm" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Grupo Scout. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="../../js/utils.js"></script>
+    <script type="module" src="../../js/storage.js"></script>
+    <script type="module" src="../../js/navigation.js"></script>
+    <script type="module" src="../../js/supabase-client.js"></script>
+    <script type="module" src="../../js/admin-tabs.js"></script>
+    <script type="module" src="../../js/admin/dirigentes.js"></script>
+</body>
+</html>

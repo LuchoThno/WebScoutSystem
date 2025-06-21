@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupo Scout - Gestión de Usuarios</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/admin-tabs.css">
+     <link rel="stylesheet" href="../../css/menu-toggle-fix.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <button class="menu-toggle" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="logo">Gestión de Usuarios</div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <h1>Gestión de Usuarios</h1>
+            <p>Control de usuarios, roles y permisos del sistema</p>
+        </section>
+
+        <section class="admin-tabs-section">
+            <div class="container">
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="usuarios">👥 Usuarios</button>
+                        <button class="tab-btn" data-tab="roles">🎭 Roles</button>
+                        <button class="tab-btn" data-tab="permisos">🔐 Permisos</button>
+                        <button class="tab-btn" data-tab="auditoria">📋 Auditoría</button>
+                        <button class="tab-btn" data-tab="recuperacion">🔑 Recuperación</button>
+                    </div>
+
+                    <!-- Tab 1: Gestión de Usuarios -->
+                    <div class="tab-content active" id="usuarios">
+                        <div class="card">
+                            <h3>Crear Nuevo Usuario</h3>
+                            <form id="userForm" class="admin-form">
+                                <div class="form-section">
+                                    <legend>Información Personal</legend>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="userName">Nombre Completo</label>
+                                            <input type="text" id="userName" name="name" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="userEmail">Correo Electrónico</label>
+                                            <input type="email" id="userEmail" name="email" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="userUsername">Nombre de Usuario</label>
+                                            <input type="text" id="userUsername" name="username" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="userPassword">Contraseña</label>
+                                            <input type="password" id="userPassword" name="password" class="form-control">
+                                            <small class="help-text">Se generará automáticamente si se deja en blanco. Mínimo 8 caracteres, incluir mayúsculas, minúsculas y números.</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <legend>Asignación de Rol</legend>
+                                    <div class="form-group">
+                                        <label for="userRole">Rol Principal</label>
+                                        <select id="userRole" name="role" class="form-control" required aria-label="Seleccionar rol principal">
+                                            <option value="">Seleccionar rol</option>
+                                            <option value="super-admin">Super Administrador</option>
+                                            <option value="admin">Administrador</option>
+                                            <option value="dirigente">Dirigente</option>
+                                            <option value="asistente">Asistente</option>
+                                            <option value="editor">Editor</option>
+                                            <option value="viewer">Solo Lectura</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="userDepartment">Departamento/Sección</label>
+                                        <select id="userDepartment" name="department" class="form-control">
+                                            <option value="">Seleccionar departamento</option>
+                                            <option value="bandada">🐦 Bandada Misioneras de la Paz y la Naturaleza</option>
+                                            <option value="manada">🐺 Manada Francisco de Asís</option>
+                                            <option value="compania">🍀 Compañía A.M.T.R</option>
+                                            <option value="tropa">🏕️ Tropa Yucatán</option>
+                                            <option value="avanzada">🌠 Avanzada Ayekan</option>
+                                            <option value="clan">🔥 Clan Peñi Rüpü</option>
+                                            <option value="administracion">Administración</option>
+                                            <option value="finanzas">Finanzas</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <legend>Permisos Específicos</legend>
+                                    <div class="permissions-grid">
+                                        <div class="permission-category">
+                                            <h4>📊 Dashboard</h4>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="dashboard.view">
+                                                <span>Ver Dashboard</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="dashboard.stats">
+                                                <span>Ver Estadísticas</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="permission-category">
+                                            <h4>👥 Miembros</h4>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="members.view">
+                                                <span>Ver Miembros</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="members.create">
+                                                <span>Crear Miembros</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="members.edit">
+                                                <span>Editar Miembros</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="members.delete">
+                                                <span>Eliminar Miembros</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="permission-category">
+                                            <h4>📅 Planificación</h4>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="planning.view">
+                                                <span>Ver Planificación</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="planning.create">
+                                                <span>Crear Actividades</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="planning.edit">
+                                                <span>Editar Actividades</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="permission-category">
+                                            <h4>📦 Recursos</h4>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="resources.view">
+                                                <span>Ver Recursos</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="resources.manage">
+                                                <span>Gestionar Inventario</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="permission-category">
+                                            <h4>💰 Finanzas</h4>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="finance.view">
+                                                <span>Ver Finanzas</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="finance.transactions">
+                                                <span>Gestionar Transacciones</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="finance.reports">
+                                                <span>Ver Reportes</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="permission-category">
+                                            <h4>🎖️ Dirigentes</h4>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="leaders.view">
+                                                <span>Ver Dirigentes</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="leaders.manage">
+                                                <span>Gestionar Dirigentes</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="permission-category">
+                                            <h4>⚙️ Administración</h4>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="admin.users">
+                                                <span>Gestionar Usuarios</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="permissions" value="admin.system">
+                                                <span>Configuración Sistema</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <legend>Configuración de Cuenta</legend>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="userStatus">Estado</label>
+                                        <select id="userStatus" name="status" class="form-control" required aria-label="Seleccionar estado del usuario">
+                                            <option value="active">Activo</option>
+                                            <option value="inactive">Inactivo</option>
+                                            <option value="suspended">Suspendido</option>
+                                            <option value="pending">Pendiente de Activación</option>
+                                        </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="userExpiry">Fecha de Expiración</label>
+                                            <input type="date" id="userExpiry" name="expiry" class="form-control">
+                                            <small class="help-text">Opcional: Fecha límite de acceso</small>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="forcePasswordChange" value="true">
+                                            <span>Forzar cambio de contraseña en el primer inicio de sesión</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Crear Usuario</button>
+                                    <button type="reset" class="btn btn-secondary">Limpiar Formulario</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>Usuarios del Sistema</h3>
+                            <div class="search-filter">
+                                <input type="text" id="searchUsers" placeholder="Buscar usuario..." class="form-control">
+<label for="filterRole" class="sr-only">Filtrar por rol</label>
+<select id="filterRole" class="form-control" aria-label="Filtrar por rol" title="Filtrar por rol" name="filterRole">
+                                    <option value="">Todos los roles</option>
+                                    <option value="super-admin">Super Administrador</option>
+                                    <option value="admin">Administrador</option>
+                                    <option value="dirigente">Dirigente</option>
+                                    <option value="asistente">Asistente</option>
+                                    <option value="editor">Editor</option>
+                                    <option value="viewer">Solo Lectura</option>
+                                </select>
+<label for="filterStatus" class="sr-only">Filtrar por estado</label>
+<select id="filterStatus" class="form-control" aria-label="Filtrar por estado" title="Filtrar por estado" name="filterStatus">
+                                    <option value="">Todos los estados</option>
+                                    <option value="active">Activo</option>
+                                    <option value="inactive">Inactivo</option>
+                                    <option value="suspended">Suspendido</option>
+                                    <option value="pending">Pendiente</option>
+                                </select>
+                            </div>
+                            <div id="usersList" class="users-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Gestión de Roles -->
+                    <div class="tab-content" id="roles">
+                        <div class="card">
+                            <h3>Crear Nuevo Rol</h3>
+                            <form id="roleForm" class="admin-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="roleName">Nombre del Rol</label>
+                                        <input type="text" id="roleName" name="name" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="roleLevel">Nivel de Acceso</label>
+                                        <select id="roleLevel" name="level" class="form-control" required>
+                                            <option value="">Seleccionar nivel</option>
+                                            <option value="1">Nivel 1 - Solo Lectura</option>
+                                            <option value="2">Nivel 2 - Editor</option>
+                                            <option value="3">Nivel 3 - Gestor</option>
+                                            <option value="4">Nivel 4 - Administrador</option>
+                                            <option value="5">Nivel 5 - Super Admin</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="roleDescription">Descripción</label>
+                                    <textarea id="roleDescription" name="description" class="form-control" rows="3" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="roleColor">Color Identificativo</label>
+                                    <input type="color" id="roleColor" name="color" class="form-control" value="#2A6E3F">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Crear Rol</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>Roles Existentes</h3>
+                            <div id="rolesList" class="roles-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Gestión de Permisos -->
+                    <div class="tab-content" id="permisos">
+                        <div class="card">
+                            <h3>Matriz de Permisos por Rol</h3>
+                            <div id="permissionsMatrix" class="permissions-matrix"></div>
+                        </div>
+
+                        <div class="card">
+                            <h3>Configurar Permisos Personalizados</h3>
+                            <form id="customPermissionForm" class="admin-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="permissionUser">Usuario</label>
+<select id="permissionUser" name="userId" class="form-control" required aria-label="Seleccionar usuario para permisos" title="Seleccionar usuario para permisos">
+                                    <option value="">Seleccionar usuario</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="permissionModule">Módulo</label>
+<select id="permissionModule" name="module" class="form-control" required aria-label="Seleccionar módulo para permisos" title="Seleccionar módulo para permisos">
+                                    <option value="">Seleccionar módulo</option>
+                                    <option value="dashboard">Dashboard</option>
+                                    <option value="members">Gestión de Miembros</option>
+                                    <option value="planning">Planificación</option>
+                                    <option value="resources">Recursos</option>
+                                    <option value="finance">Finanzas</option>
+                                    <option value="leaders">Dirigentes</option>
+                                    <option value="admin">Administración</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Acciones Permitidas</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="actions" value="view">
+                                    <span>Ver</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="actions" value="create">
+                                    <span>Crear</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="actions" value="edit">
+                                    <span>Editar</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="actions" value="delete">
+                                    <span>Eliminar</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="actions" value="export">
+                                    <span>Exportar</span>
+                                </label>
+                            </div>
+                        </div>
+                                <button type="submit" class="btn btn-primary">Asignar Permisos</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Auditoría -->
+                    <div class="tab-content" id="auditoria">
+                        <div class="card">
+                            <h3>Registro de Actividades</h3>
+                            <div class="audit-filters">
+                                <input type="text" id="auditSearch" placeholder="Buscar actividad..." class="form-control">
+<label for="auditUser" class="sr-only">Filtrar por usuario</label>
+<select id="auditUser" class="form-control" aria-label="Filtrar por usuario" title="Filtrar por usuario">
+                                    <option value="">Todos los usuarios</option>
+                                </select>
+<label for="auditAction" class="sr-only">Filtrar por acción</label>
+<select id="auditAction" class="form-control" aria-label="Filtrar por acción" title="Filtrar por acción">
+                                    <option value="">Todas las acciones</option>
+                                    <option value="login">Inicio de Sesión</option>
+                                    <option value="logout">Cierre de Sesión</option>
+                                    <option value="create">Crear</option>
+                                    <option value="edit">Editar</option>
+                                    <option value="delete">Eliminar</option>
+                                    <option value="view">Ver</option>
+                                    <option value="export">Exportar</option>
+                                </select>
+<label for="auditDateFrom" class="sr-only">Fecha desde</label>
+<input type="date" id="auditDateFrom" class="form-control" aria-label="Fecha desde" title="Fecha desde" placeholder="Fecha desde">
+<label for="auditDateTo" class="sr-only">Fecha hasta</label>
+<input type="date" id="auditDateTo" class="form-control" aria-label="Fecha hasta" title="Fecha hasta" placeholder="Fecha hasta">
+                            </div>
+                            <div id="auditLog" class="audit-log"></div>
+                        </div>
+
+                        <div class="card">
+                            <h3>Estadísticas de Uso</h3>
+                            <div class="usage-stats">
+                                <div class="stat-card">
+                                    <h4>Usuarios Activos Hoy</h4>
+                                    <span class="stat-number" id="activeToday">0</span>
+                                </div>
+                                <div class="stat-card">
+                                    <h4>Sesiones Esta Semana</h4>
+                                    <span class="stat-number" id="sessionsWeek">0</span>
+                                </div>
+                                <div class="stat-card">
+                                    <h4>Módulo Más Usado</h4>
+                                    <span class="stat-text" id="topModule">Dashboard</span>
+                                </div>
+                                <div class="stat-card">
+                                    <h4>Tiempo Promedio de Sesión</h4>
+                                    <span class="stat-text" id="avgSession">25 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab 5: Recuperación de Contraseña -->
+                    <div class="tab-content" id="recuperacion">
+                        <div class="card">
+                            <h3>Solicitar Recuperación de Contraseña</h3>
+                            <form id="resetPasswordRequestForm" class="admin-form">
+                                <div class="form-group">
+                                    <label for="resetEmail">Correo Electrónico</label>
+                                    <input type="email" id="resetEmail" name="email" class="form-control" required>
+                                    <small class="help-text">Ingrese el correo electrónico asociado a su cuenta</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Solicitar Restablecimiento</button>
+                            </form>
+                            <div class="info-box" style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #2A6E3F;">
+                                <p><strong>Nota:</strong> Se enviará un enlace de restablecimiento a su correo electrónico. El enlace será válido por 24 horas.</p>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>Restablecer Contraseña</h3>
+                            <form id="resetPasswordForm" class="admin-form">
+                                <div class="form-group">
+                                    <label for="resetToken">Token de Restablecimiento</label>
+                                    <input type="text" id="resetToken" name="token" class="form-control" required>
+                                    <small class="help-text">Ingrese el token recibido en su correo electrónico</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPassword">Nueva Contraseña</label>
+                                    <input type="password" id="newPassword" name="newPassword" class="form-control" required>
+                                    <small class="help-text">Mínimo 8 caracteres, incluir mayúsculas, minúsculas y números</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirmPassword">Confirmar Contraseña</label>
+                                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Restablecer Contraseña</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Grupo Scout. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="../../js/utils.js"></script>
+    <script type="module" src="../../js/storage.js"></script>
+    <script type="module" src="../../js/navigation.js"></script>
+    <script type="module" src="../../js/supabase-client.js"></script>
+    <script type="module" src="../../js/admin/gestion-usuarios.js"></script>
+</body>
+</html>

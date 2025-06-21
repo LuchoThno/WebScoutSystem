@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupo Scout - Gestión de Recursos</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/admin-tabs.css">
+    <link rel="stylesheet" href="../../css/menu-toggle-fix.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <button class="menu-toggle" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="logo">Gestión de Recursos</div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <h1>Gestión de Recursos</h1>
+            <p>Inventario, materiales y equipamiento del grupo</p>
+        </section>
+
+        <section class="admin-tabs-section">
+            <div class="container">
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="inventario">📦 Inventario</button>
+                        <button class="tab-btn" data-tab="material-educativo">📚 Material Educativo</button>
+                        <button class="tab-btn" data-tab="equipamiento">⚙️ Equipamiento</button>
+                        <button class="tab-btn" data-tab="locaciones">🏢 Locaciones</button>
+                    </div>
+
+                    <!-- Tab 1: Inventario -->
+                    <div class="tab-content active" id="inventario">
+                        <div class="card">
+                            <h3>Agregar Artículo al Inventario</h3>
+                            <form id="inventoryForm" class="admin-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="itemName">Nombre del Artículo</label>
+                                        <input type="text" id="itemName" name="name" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="itemCategory">Categoría</label>
+                                        <select id="itemCategory" name="category" class="form-control" required aria-label="Seleccionar categoría de artículo">
+                                            <option value="">Seleccionar categoría</option>
+                                            <option value="camping">Equipos de Camping</option>
+                                            <option value="cocina">Utensilios de Cocina</option>
+                                            <option value="deportes">Material Deportivo</option>
+                                            <option value="manualidades">Manualidades</option>
+                                            <option value="primeros-auxilios">Primeros Auxilios</option>
+                                            <option value="herramientas">Herramientas</option>
+                                            <option value="uniformes">Uniformes y Insignias</option>
+                                            <option value="libros">Libros y Manuales</option>
+                                            <option value="juegos">Juegos</option>
+                                            <option value="electronica">Electrónicos</option>
+                                            <option value="otros">Otros</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="itemQuantity">Cantidad</label>
+                                        <input type="number" id="itemQuantity" name="quantity" class="form-control" min="1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="itemUnit">Unidad</label>
+                                        <select id="itemUnit" name="unit" class="form-control" required aria-label="Seleccionar unidad de medida">
+                                            <option value="unidad">Unidad</option>
+                                            <option value="par">Par</option>
+                                            <option value="set">Set</option>
+                                            <option value="caja">Caja</option>
+                                            <option value="paquete">Paquete</option>
+                                            <option value="metro">Metro</option>
+                                            <option value="litro">Litro</option>
+                                            <option value="kilogramo">Kilogramo</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="itemCondition">Estado</label>
+                                        <select id="itemCondition" name="condition" class="form-control" required aria-label="Seleccionar estado del artículo" title="Seleccionar estado del artículo">
+                                            <option value="nuevo">Nuevo</option>
+                                            <option value="excelente">Excelente</option>
+                                            <option value="bueno">Bueno</option>
+                                            <option value="regular">Regular</option>
+                                            <option value="malo">Malo</option>
+                                            <option value="reparacion">Necesita Reparación</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="itemLocation">Ubicación</label>
+                                        <input type="text" id="itemLocation" name="location" class="form-control" placeholder="Ej: Bodega A, Estante 2" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="itemValue">Valor Unitario</label>
+                                        <input type="number" id="itemValue" name="value" class="form-control" min="0" step="0.01">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="itemPurchaseDate">Fecha de Compra</label>
+                                        <input type="date" id="itemPurchaseDate" name="purchaseDate" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="itemDescription">Descripción</label>
+                                    <textarea id="itemDescription" name="description" class="form-control" rows="2"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="itemResponsible">Responsable</label>
+                                    <input type="text" id="itemResponsible" name="responsible" class="form-control">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Agregar al Inventario</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>Inventario General</h3>
+                            <div class="inventory-controls">
+                                <div class="search-filter">
+                                    <input type="text" id="searchInventory" placeholder="Buscar artículo..." class="form-control">
+                                    <select id="filterCategory" class="form-control" aria-label="Filtrar por categoría">
+                                        <option value="">Todas las categorías</option>
+                                        <option value="camping">Equipos de Camping</option>
+                                        <option value="cocina">Utensilios de Cocina</option>
+                                        <option value="deportes">Material Deportivo</option>
+                                        <option value="manualidades">Manualidades</option>
+                                        <option value="primeros-auxilios">Primeros Auxilios</option>
+                                        <option value="herramientas">Herramientas</option>
+                                        <option value="uniformes">Uniformes y Insignias</option>
+                                        <option value="libros">Libros y Manuales</option>
+                                        <option value="juegos">Juegos</option>
+                                        <option value="electronica">Electrónicos</option>
+                                        <option value="otros">Otros</option>
+                                    </select>
+                                    <select id="filterCondition" class="form-control" aria-label="Filtrar por estado" title="Filtrar por estado">
+                                        <option value="">Todos los estados</option>
+                                        <option value="nuevo">Nuevo</option>
+                                        <option value="excelente">Excelente</option>
+                                        <option value="bueno">Bueno</option>
+                                        <option value="regular">Regular</option>
+                                        <option value="malo">Malo</option>
+                                        <option value="reparacion">Necesita Reparación</option>
+                                    </select>
+                                </div>
+                                <div class="inventory-actions">
+                                    <button id="exportInventory" class="btn btn-secondary">Exportar Inventario</button>
+                                    <button id="generateInventoryReport" class="btn btn-secondary">Generar Reporte</button>
+                                </div>
+                            </div>
+                            <div id="inventoryList" class="inventory-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Material Educativo -->
+                    <div class="tab-content" id="material-educativo">
+                        <div class="card">
+                            <h3>Agregar Material Educativo</h3>
+                            <form id="educationalForm" class="admin-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="materialTitle">Título</label>
+                                        <input type="text" id="materialTitle" name="title" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="materialType">Tipo</label>
+                                    <select id="materialType" name="type" class="form-control" required aria-label="Seleccionar tipo">
+                                        <option value="">Seleccionar tipo</option>
+                                        <option value="manual">Manual</option>
+                                        <option value="libro">Libro</option>
+                                        <option value="guia">Guía de Actividades</option>
+                                        <option value="juego">Juego Educativo</option>
+                                        <option value="video">Video/DVD</option>
+                                        <option value="presentacion">Presentación</option>
+                                        <option value="poster">Póster/Lámina</option>
+                                        <option value="kit">Kit Educativo</option>
+                                    </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="materialSubject">Materia/Tema</label>
+                                    <select id="materialSubject" name="subject" class="form-control" required aria-label="Seleccionar tema">
+                                        <option value="">Seleccionar tema</option>
+                                        <option value="corporalidad">Corporalidad</option>
+                                        <option value="creatividad">Creatividad</option>
+                                        <option value="caracter">Carácter</option>
+                                        <option value="afectividad">Afectividad</option>
+                                        <option value="sociabilidad">Sociabilidad</option>
+                                        <option value="espiritualidad">Espiritualidad</option>
+                                        <option value="primeros-auxilios">Primeros Auxilios</option>
+                                        <option value="nudos">Nudos y Amarres</option>
+                                        <option value="orientacion">Orientación</option>
+                                        <option value="campismo">Campismo</option>
+                                        <option value="cocina">Cocina de Campamento</option>
+                                        <option value="historia-scout">Historia Scout</option>
+                                    </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="materialAgeGroup">Grupo de Edad</label>
+                                    <select id="materialAgeGroup" name="ageGroup" class="form-control" required aria-label="Seleccionar grupo de edad">
+                                        <option value="">Seleccionar grupo</option>
+                                        <option value="bandada">🐦 Bandada (5-7 años)</option>
+                                        <option value="manada">🐺 Manada (8-11 años)</option>
+                                        <option value="compania">🍀 Compañía (12-14 años)</option>
+                                        <option value="tropa">🏕️ Tropa (15-17 años)</option>
+                                        <option value="avanzada">🌠 Avanzada (18-21 años)</option>
+                                        <option value="clan">🔥 Clan (22+ años)</option>
+                                        <option value="dirigentes">Dirigentes</option>
+                                        <option value="todos">Todos los grupos</option>
+                                    </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="materialAuthor">Autor/Editorial</label>
+                                        <input type="text" id="materialAuthor" name="author" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="materialYear">Año</label>
+                                        <input type="number" id="materialYear" name="year" class="form-control" min="1900" max="2030">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="materialQuantity">Cantidad Disponible</label>
+                                        <input type="number" id="materialQuantity" name="quantity" class="form-control" min="1" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="materialDescription">Descripción</label>
+                                    <textarea id="materialDescription" name="description" class="form-control" rows="3" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="materialLocation">Ubicación</label>
+                                    <input type="text" id="materialLocation" name="location" class="form-control" placeholder="Ej: Biblioteca, Estante A" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Agregar Material</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>Biblioteca de Materiales</h3>
+                            <div class="materials-controls">
+                                <div class="search-filter">
+                                    <input type="text" id="searchMaterials" placeholder="Buscar material..." class="form-control">
+                                    <select id="filterMaterialType" class="form-control" aria-label="Filtrar por tipo de material">
+                                        <option value="">Todos los tipos</option>
+                                        <option value="manual">Manual</option>
+                                        <option value="libro">Libro</option>
+                                        <option value="guia">Guía de Actividades</option>
+                                        <option value="juego">Juego Educativo</option>
+                                        <option value="video">Video/DVD</option>
+                                        <option value="presentacion">Presentación</option>
+                                        <option value="poster">Póster/Lámina</option>
+                                        <option value="kit">Kit Educativo</option>
+                                    </select>
+                                    <select id="filterMaterialSubject" class="form-control" aria-label="Filtrar por tema de material">
+                                        <option value="">Todos los temas</option>
+                                        <option value="corporalidad">Corporalidad</option>
+                                        <option value="creatividad">Creatividad</option>
+                                        <option value="caracter">Carácter</option>
+                                        <option value="afectividad">Afectividad</option>
+                                        <option value="sociabilidad">Sociabilidad</option>
+                                        <option value="espiritualidad">Espiritualidad</option>
+                                        <option value="primeros-auxilios">Primeros Auxilios</option>
+                                        <option value="nudos">Nudos y Amarres</option>
+                                        <option value="orientacion">Orientación</option>
+                                        <option value="campismo">Campismo</option>
+                                        <option value="cocina">Cocina de Campamento</option>
+                                        <option value="historia-scout">Historia Scout</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="materialsList" class="materials-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Equipamiento -->
+                    <div class="tab-content" id="equipamiento">
+                        <div class="card">
+                            <h3>Registro de Equipamiento</h3>
+                            <form id="equipmentForm" class="admin-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="equipmentName">Nombre del Equipo</label>
+                                        <input type="text" id="equipmentName" name="name" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="equipmentType">Tipo</label>
+                                        <select id="equipmentType" name="type" class="form-control" required>
+                                            <option value="">Seleccionar tipo</option>
+                                            <option value="carpas">Carpas</option>
+                                            <option value="sacos">Sacos de Dormir</option>
+                                            <option value="cocina">Equipos de Cocina</option>
+                                            <option value="iluminacion">Iluminación</option>
+                                            <option value="comunicacion">Comunicación</option>
+                                            <option value="navegacion">Navegación</option>
+                                            <option value="seguridad">Seguridad</option>
+                                            <option value="transporte">Transporte</option>
+                                            <option value="herramientas">Herramientas</option>
+                                            <option value="electronico">Electrónicos</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="equipmentBrand">Marca</label>
+                                        <input type="text" id="equipmentBrand" name="brand" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="equipmentModel">Modelo</label>
+                                        <input type="text" id="equipmentModel" name="model" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="equipmentSerial">Número de Serie</label>
+                                        <input type="text" id="equipmentSerial" name="serial" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="equipmentCondition">Estado</label>
+                                        <select id="equipmentCondition" name="condition" class="form-control" required>
+                                            <option value="excelente">Excelente</option>
+                                            <option value="bueno">Bueno</option>
+                                            <option value="regular">Regular</option>
+                                            <option value="malo">Malo</option>
+                                            <option value="fuera-servicio">Fuera de Servicio</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="equipmentPurchaseDate">Fecha de Compra</label>
+                                        <input type="date" id="equipmentPurchaseDate" name="purchaseDate" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="equipmentValue">Valor</label>
+                                        <input type="number" id="equipmentValue" name="value" class="form-control" min="0" step="0.01">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="equipmentLocation">Ubicación</label>
+                                        <input type="text" id="equipmentLocation" name="location" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="equipmentResponsible">Responsable</label>
+                                        <input type="text" id="equipmentResponsible" name="responsible" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="equipmentNotes">Notas de Mantenimiento</label>
+                                    <textarea id="equipmentNotes" name="notes" class="form-control" rows="2"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Registrar Equipo</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>Equipamiento Registrado</h3>
+                            <div class="equipment-controls">
+                                <div class="search-filter">
+                                    <input type="text" id="searchEquipment" placeholder="Buscar equipo..." class="form-control">
+                                    <select id="filterEquipmentType" class="form-control" aria-label="Filtrar por tipo de equipamiento">
+                                        <option value="">Todos los tipos</option>
+                                        <option value="carpas">Carpas</option>
+                                        <option value="sacos">Sacos de Dormir</option>
+                                        <option value="cocina">Equipos de Cocina</option>
+                                        <option value="iluminacion">Iluminación</option>
+                                        <option value="comunicacion">Comunicación</option>
+                                        <option value="navegacion">Navegación</option>
+                                        <option value="seguridad">Seguridad</option>
+                                        <option value="transporte">Transporte</option>
+                                        <option value="herramientas">Herramientas</option>
+                                        <option value="electronico">Electrónicos</option>
+                                    </select>
+                                    <select id="filterEquipmentCondition" class="form-control" aria-label="Filtrar por estado de equipamiento">
+                                        <option value="">Todos los estados</option>
+                                        <option value="excelente">Excelente</option>
+                                        <option value="bueno">Bueno</option>
+                                        <option value="regular">Regular</option>
+                                        <option value="malo">Malo</option>
+                                        <option value="fuera-servicio">Fuera de Servicio</option>
+                                    </select>
+                                </div>
+                                <div class="equipment-actions">
+                                    <button id="scheduleMaintenanceBtn" class="btn btn-secondary">Programar Mantenimiento</button>
+                                    <button id="equipmentReportBtn" class="btn btn-secondary">Reporte de Estado</button>
+                                </div>
+                            </div>
+                            <div id="equipmentList" class="equipment-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Locaciones -->
+                    <div class="tab-content" id="locaciones">
+                        <div class="card">
+                            <h3>Registrar Locación</h3>
+                            <form id="locationForm" class="admin-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="locationName">Nombre de la Locación</label>
+                                        <input type="text" id="locationName" name="name" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationType">Tipo</label>
+                                        <select id="locationType" name="type" class="form-control" required>
+                                            <option value="">Seleccionar tipo</option>
+                                            <option value="sede">Sede del Grupo</option>
+                                            <option value="campamento">Área de Campamento</option>
+                                            <option value="reunion">Lugar de Reunión</option>
+                                            <option value="actividades">Área de Actividades</option>
+                                            <option value="almacen">Almacén/Bodega</option>
+                                            <option value="cocina">Cocina</option>
+                                            <option value="sanitarios">Sanitarios</option>
+                                            <option value="enfermeria">Enfermería</option>
+                                            <option value="oficina">Oficina</option>
+                                            <option value="externo">Lugar Externo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="locationAddress">Dirección</label>
+                                    <textarea id="locationAddress" name="address" class="form-control" rows="2" required></textarea>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="locationCapacity">Capacidad</label>
+                                        <input type="number" id="locationCapacity" name="capacity" class="form-control" min="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationArea">Área (m²)</label>
+                                        <input type="number" id="locationArea" name="area" class="form-control" min="1" step="0.1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationStatus">Estado</label>
+                                        <select id="locationStatus" name="status" class="form-control" required>
+                                            <option value="disponible">Disponible</option>
+                                            <option value="ocupado">Ocupado</option>
+                                            <option value="mantenimiento">En Mantenimiento</option>
+                                            <option value="fuera-servicio">Fuera de Servicio</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="locationFacilities">Instalaciones Disponibles</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="facilities" value="agua">
+                                            <span>Agua Potable</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="facilities" value="electricidad">
+                                            <span>Electricidad</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="facilities" value="sanitarios">
+                                            <span>Sanitarios</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="facilities" value="cocina">
+                                            <span>Cocina</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="facilities" value="internet">
+                                            <span>Internet/WiFi</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="facilities" value="estacionamiento">
+                                            <span>Estacionamiento</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="facilities" value="seguridad">
+                                            <span>Seguridad</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="facilities" value="accesibilidad">
+                                            <span>Accesibilidad</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="locationContact">Contacto</label>
+                                        <input type="text" id="locationContact" name="contact" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationPhone">Teléfono</label>
+                                        <input type="tel" id="locationPhone" name="phone" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationCost">Costo por Uso</label>
+                                        <input type="number" id="locationCost" name="cost" class="form-control" min="0" step="0.01">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="locationNotes">Notas Adicionales</label>
+                                    <textarea id="locationNotes" name="notes" class="form-control" rows="2"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Registrar Locación</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>Locaciones Registradas</h3>
+                            <div class="locations-controls">
+                                <div class="search-filter">
+                                    <input type="text" id="searchLocations" placeholder="Buscar locación..." class="form-control">
+                                    <select id="filterLocationType" class="form-control" aria-label="Filtrar por tipo de locación" title="Filtrar por tipo de locación">
+                                        <option value="">Todos los tipos</option>
+                                        <option value="sede">Sede del Grupo</option>
+                                        <option value="campamento">Área de Campamento</option>
+                                        <option value="reunion">Lugar de Reunión</option>
+                                        <option value="actividades">Área de Actividades</option>
+                                        <option value="almacen">Almacén/Bodega</option>
+                                        <option value="cocina">Cocina</option>
+                                        <option value="sanitarios">Sanitarios</option>
+                                        <option value="enfermeria">Enfermería</option>
+                                        <option value="oficina">Oficina</option>
+                                        <option value="externo">Lugar Externo</option>
+                                    </select>
+                                    <select id="filterLocationStatus" class="form-control" aria-label="Filtrar por estado de locación" title="Filtrar por estado de locación">
+                                        <option value="">Todos los estados</option>
+                                        <option value="disponible">Disponible</option>
+                                        <option value="ocupado">Ocupado</option>
+                                        <option value="mantenimiento">En Mantenimiento</option>
+                                        <option value="fuera-servicio">Fuera de Servicio</option>
+                                    </select>
+                                </div>
+                                <div class="locations-actions">
+                                    <button id="reserveLocationBtn" class="btn btn-primary">Reservar Locación</button>
+                                    <button id="locationsMapBtn" class="btn btn-secondary">Ver Mapa</button>
+                                </div>
+                            </div>
+                            <div id="locationsList" class="locations-grid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Grupo Scout. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="../../js/utils.js"></script>
+    <script type="module" src="../../js/storage.js"></script>
+    <script type="module" src="../../js/navigation.js"></script>
+    <script type="module" src="../../js/admin/recursos.js"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupo Scout - Dirigentes y Guías</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="/css/dirigentes.css">
+    <link rel="stylesheet" href="/css/menu-toggle-fix.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<style>
+.visually-hidden {
+    position: absolute !important;
+    height: 1px; width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap;
+}
+</style>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <button class="menu-toggle" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="logo">Grupo Scout</div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <h1>Dirigentes y Guías</h1>
+            <p>Conoce a nuestro equipo de líderes y miembros</p>
+        </section>
+
+        <section class="members-section">
+            <div class="container">
+                <h2>Registro de Miembros</h2>
+                <form id="memberForm" class="card">
+                    <div class="form-group">
+                        <label for="fullName">Nombre Completo</label>
+                        <input type="text" id="fullName" name="fullName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="role">Rol</label>
+                        <select id="role" name="role" class="form-control" required>
+                            <option value="">Selecciona un rol</option>
+                            <option value="dirigente">Dirigente</option>
+                            <option value="delegado">Delegado</option>
+                            <option value="guia">Guía</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="group">Grupo</label>
+                        <select id="group" name="group" class="form-control" required>
+                            <option value="">Selecciona un grupo</option>
+                            <option value="bandada">🐦 Bandada Misioneras de la Paz y la Naturaleza</option>
+                            <option value="manada">🐺 Manada Francisco de Asís</option>
+                            <option value="compania">🍀 Compañía A.M.T.R</option>
+                            <option value="tropa">🏕️ Tropa Yucatán</option>
+                            <option value="avanzada">🌠 Avanzada Ayekan</option>
+                            <option value="clan">🔥 Clan Peñi Rüpü</option>
+                            <option value="grupo-general">Grupo General</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                <!-- Filtro de grupos -->
+                <div class="filter-controls">
+                    <label for="groupFilter" class="visually-hidden">Filtrar por grupo</label>
+                    <select id="groupFilter" class="form-control">
+                        <option value="">Todos los grupos</option>
+                        <option value="grupo-general">Grupo General</option>
+                        <option value="bandada">🐦 Bandada</option>
+                        <option value="manada">🐺 Manada</option>
+                        <option value="compania">🍀 Compañía</option>
+                        <option value="tropa">🏕️ Tropa</option>
+                        <option value="avanzada">🌠 Avanzada</option>
+                        <option value="clan">🔥 Clan</option>
+                    </select>
+                </div>
+                        <option value="grupo-general">Grupo General</option>
+                        <option value="bandada">🐦 Bandada</option>
+                        <option value="manada">🐺 Manada</option>
+                        <option value="compania">🍀 Compañía</option>
+                        <option value="tropa">🏕️ Tropa</option>
+                        <option value="avanzada">🌠 Avanzada</option>
+                        <option value="clan">🔥 Clan</option>
+                    </>
+                </div>
+                
+                <!-- Contenedor para los miembros agrupados -->
+                <div id="groupedMembers" class="grouped-members-container">
+                    <!-- El contenido se generará dinámicamente con JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <p>Email: contacto@gruposcout.org</p>
+                <p>Teléfono: (123) 456-7890</p>
+            </div>
+            <div class="footer-section">
+                <h3>Síguenos</h3>
+                <div class="social-links">
+                    <a href="#" target="_blank">Facebook</a>
+                    <a href="#" target="_blank">Instagram</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Grupo Scout. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="/js/utils.js"></script>
+    <script type="module" src="/js/storage.js"></script>
+    <script type="module" src="/js/navigation.js"></script>
+    <script type="module" src="/js/members-display.js"></script>
+</body>
+</html>

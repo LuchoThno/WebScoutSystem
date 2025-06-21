@@ -1,0 +1,307 @@
+/* Navigation and Tabs Integration Styles */
+
+/* Breadcrumb Navigation */
+.breadcrumb-nav {
+    background: rgba(42, 110, 63, 0.05);
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid rgba(42, 110, 63, 0.1);
+    margin-bottom: var(--spacing-md);
+}
+
+.breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    list-style: none;
+    margin: 0;
+    padding: 0 var(--spacing-lg);
+    font-size: 0.9rem;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item:not(:last-child)::after {
+    content: '›';
+    margin-left: var(--spacing-xs);
+    color: var(--color-text-light);
+    font-weight: 600;
+}
+
+.breadcrumb-item a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+/* Tab Shortcuts in Sidebar */
+.tab-shortcut {
+    position: relative;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+}
+
+.tab-shortcut .shortcut-key {
+    position: absolute;
+    right: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tab-shortcut:hover .shortcut-key,
+.tab-shortcut:focus .shortcut-key {
+    opacity: 1;
+}
+
+.tab-shortcut.active {
+    background: rgba(255, 255, 255, 0.15);
+    border-left: 4px solid var(--color-white);
+}
+
+.tab-shortcut.active .shortcut-key {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--color-white);
+}
+
+/* Enhanced Sidebar for Admin Pages */
+.sidebar.admin-enhanced {
+    width: 320px;
+}
+
+.sidebar.admin-enhanced .admin-section {
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+}
+
+.sidebar.admin-enhanced .admin-section-title {
+    background: rgba(255, 255, 255, 0.1);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-md);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Navigation State Indicators */
+.nav-link.has-updates::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    background: #ff4757;
+    border-radius: 50%;
+    border: 2px solid var(--color-primary);
+}
+
+.nav-link.loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 12px;
+    height: 12px;
+    margin-top: -6px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--color-white);
+    animation: spin 1s linear infinite;
+}
+
+/* Quick Actions in Sidebar */
+.sidebar-quick-actions {
+    padding: var(--spacing-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: auto;
+}
+
+.quick-action-btn {
+    width: 100%;
+    padding: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-white);
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: var(--spacing-xs);
+}
+
+.quick-action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Navigation Sync Indicators */
+.nav-sync-indicator {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    z-index: 1001;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+}
+
+.nav-sync-indicator.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Enhanced Mobile Navigation */
+@media (max-width: 768px) {
+    .breadcrumb-nav {
+        padding: var(--spacing-xs) 0;
+    }
+    
+    .breadcrumb-list {
+        padding: 0 var(--spacing-md);
+        font-size: 0.8rem;
+    }
+    
+    .breadcrumb-item {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .tab-shortcut .shortcut-key {
+        display: none;
+    }
+    
+    .sidebar.admin-enhanced {
+        width: 280px;
+    }
+}
+
+/* Keyboard Navigation Enhancements */
+.keyboard-navigation .nav-link:focus,
+.keyboard-navigation .tab-shortcut:focus {
+    outline: 2px solid var(--color-white);
+    outline-offset: 2px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .breadcrumb-nav {
+        border-bottom: 2px solid var(--color-primary);
+    }
+    
+    .breadcrumb-item a {
+        text-decoration: underline;
+    }
+    
+    .tab-shortcut.active {
+        border-left-width: 6px;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .tab-shortcut .shortcut-key,
+    .nav-link.loading::before,
+    .nav-sync-indicator {
+        transition: none;
+        animation: none;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .breadcrumb-nav,
+    .sidebar-quick-actions,
+    .nav-sync-indicator {
+        display: none;
+    }
+}
+
+/* Animation Keyframes */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Focus Management */
+.focus-trap-active {
+    overflow: hidden;
+}
+
+.focus-trap-active .sidebar {
+    position: fixed;
+    z-index: 9999;
+}
+
+/* Navigation Performance Optimizations */
+.nav-link {
+    will-change: transform, background-color;
+}
+
+.tab-shortcut {
+    will-change: background-color, border-color;
+}
+
+/* Accessibility Enhancements */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Navigation State Persistence */
+.nav-state-loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.nav-state-error {
+    border-left: 4px solid #ff4757;
+    background: rgba(255, 71, 87, 0.1);
+}
+
+.nav-state-success {
+    border-left: 4px solid #2ed573;
+    background: rgba(46, 213, 115, 0.1);
+}

@@ -1,0 +1,10 @@
+/* Styles extracted from inline attributes in admin dashboard page */
+
+.progress-fill {
+    width: 0%;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+}

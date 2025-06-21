@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Grupo Scout - Planificación</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="../../css/components.css" />
+    <link rel="stylesheet" href="../../css/responsive.css" />
+    <link rel="stylesheet" href="../../css/admin-tabs.css" />
+    <link rel="stylesheet" href="../../css/menu-toggle-fix.css" />
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <button class="menu-toggle" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="logo">Planificación</div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <h1>Planificación</h1>
+            <p>Gestión de actividades, programas y eventos</p>
+        </section>
+
+        <section class="admin-tabs-section">
+            <div class="container">
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="calendario">📅 Calendario</button>
+                        <button class="tab-btn" data-tab="programas">📚 Programas Educativos</button>
+                        <button class="tab-btn" data-tab="eventos">🎉 Eventos Especiales</button>
+                        <button class="tab-btn" data-tab="campamentos">🏕️ Campamentos</button>
+                    </div>
+
+                    <!-- Tab 1: Calendario -->
+                    <div class="tab-content active" id="calendario">
+                        <div class="card">
+                            <h3>Nueva Actividad</h3>
+                            <form id="activityPlanForm" class="admin-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="activityTitle">Título de la Actividad</label>
+                                        <input type="text" id="activityTitle" name="title" class="form-control" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="activityType">Tipo</label>
+                                        <select id="activityType" name="type" class="form-control" required aria-label="Seleccionar tipo de actividad" title="Seleccionar tipo de actividad">
+                                            <option value="">Seleccionar tipo</option>
+                                            <option value="reunion">Reunión Regular</option>
+                                            <option value="taller">Taller</option>
+                                            <option value="juego">Juego</option>
+                                            <option value="servicio">Servicio Comunitario</option>
+                                            <option value="excursion">Excursión</option>
+                                            <option value="ceremonia">Ceremonia</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="activityDate">Fecha</label>
+                                        <input type="date" id="activityDate" name="date" class="form-control" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="activityTime">Hora</label>
+                                        <input type="time" id="activityTime" name="time" class="form-control" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="activityDuration">Duración (horas)</label>
+                                        <input type="number" id="activityDuration" name="duration" class="form-control" min="0.5" step="0.5" required />
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="activityGroup">Grupo Objetivo</label>
+                                        <select id="activityGroup" name="targetGroup" class="form-control" required title="Seleccionar grupo objetivo">
+                                            <option value="">Seleccionar grupo</option>
+                                            <option value="todos">Todos los grupos</option>
+                                            <option value="bandada">🐦 Bandada</option>
+                                            <option value="manada">🐺 Manada</option>
+                                            <option value="compania">🍀 Compañía</option>
+                                            <option value="tropa">🏕️ Tropa</option>
+                                            <option value="avanzada">🌠 Avanzada</option>
+                                            <option value="clan">🔥 Clan</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="activityLocation">Ubicación</label>
+                                        <input type="text" id="activityLocation" name="location" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="activityDescription">Descripción</label>
+                                    <textarea id="activityDescription" name="description" class="form-control" rows="3" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="activityResponsible">Responsable</label>
+                                    <input type="text" id="activityResponsible" name="responsible" class="form-control" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="activityMaterials">Materiales Necesarios</label>
+                                    <textarea id="activityMaterials" name="materials" class="form-control" rows="2" placeholder="Lista de materiales requeridos"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Programar Actividad</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>Calendario de Actividades</h3>
+                            <div class="calendar-controls">
+                                <button id="prevMonth" class="btn btn-secondary">‹ Anterior</button>
+                                <span id="currentMonth" class="current-month"></span>
+                                <button id="nextMonth" class="btn btn-secondary">Siguiente ›</button>
+                            </div>
+                            <div id="calendar" class="calendar-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Programas Educativos -->
+                    <div class="tab-content" id="programas">
+                        <div class="card">
+                            <h3>Nuevo Programa Educativo</h3>
+                            <form id="programForm" class="admin-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="programName">Nombre del Programa</label>
+                                        <input type="text" id="programName" name="name" class="form-control" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="programGroup">Grupo Objetivo</label>
+                                        <select id="programGroup" name="targetGroup" class="form-control" required title="Seleccionar grupo objetivo">
+                                            <option value="">Seleccionar grupo</option>
+                                            <option value="bandada">🐦 Bandada (5-7 años)</option>
+                                            <option value="manada">🐺 Manada (8-11 años)</option>
+                                            <option value="compania">🍀 Compañía (12-14 años)</option>
+                                            <option value="tropa">🏕️ Tropa (15-17 años)</option>
+                                            <option value="avanzada">🌠 Avanzada (18-21 años)</option>
+                                            <option value="clan">🔥 Clan (22+ años)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="programArea">Área de Desarrollo</label>
+                                    <select id="programArea" name="area" class="form-control" required aria-label="Filtrar por área de desarrollo" title="Filtrar por área de desarrollo">
+                                        <option value="">Seleccionar área</option>
+                                        <option value="corporalidad">Corporalidad</option>
+                                        <option value="creatividad">Creatividad</option>
+                                        <option value="caracter">Carácter</option>
+                                        <option value="afectividad">Afectividad</option>
+                                        <option value="sociabilidad">Sociabilidad</option>
+                                        <option value="espiritualidad">Espiritualidad</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="programDuration">Duración (semanas)</label>
+                                    <input type="number" id="programDuration" name="duration" class="form-control" min="1" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="programObjectives">Objetivos</label>
+                                    <textarea id="programObjectives" name="objectives" class="form-control" rows="3" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="programActivities">Actividades Incluidas</label>
+                                    <textarea id="programActivities" name="activities" class="form-control" rows="4" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="programResources">Recursos Necesarios</label>
+                                    <textarea id="programResources" name="resources" class="form-control" rows="2"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Crear Programa</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>Programas Educativos</h3>
+                            <div class="program-filters">
+                                <label for="filterProgramGroup" class="sr-only">Filtrar por grupo</label>
+                                <select id="filterProgramGroup" class="form-control" aria-label="Filtrar por grupo" title="Filtrar por grupo" name="filterProgramGroup">
+                                    <option value="">Todos los grupos</option>
+                                    <option value="bandada">🐦 Bandada</option>
+                                    <option value="manada">🐺 Manada</option>
+                                    <option value="compania">🍀 Compañía</option>
+                                    <option value="tropa">🏕️ Tropa</option>
+                                    <option value="avanzada">🌠 Avanzada</option>
+                                    <option value="clan">🔥 Clan</option>
+                                </select>
+                                <label for="filterProgramArea" class="sr-only">Filtrar por área de desarrollo</label>
+                                <select id="filterProgramArea" class="form-control" aria-label="Filtrar por área de desarrollo" title="Filtrar por área de desarrollo" name="filterProgramArea">
+                                    <option value="">Todas las áreas</option>
+                                    <option value="corporalidad">Corporalidad</option>
+                                    <option value="creatividad">Creatividad</option>
+                                    <option value="caracter">Carácter</option>
+                                    <option value="afectividad">Afectividad</option>
+                                    <option value="sociabilidad">Sociabilidad</option>
+                                    <option value="espiritualidad">Espiritualidad</option>
+                                </select>
+                            </div>
+                            <div id="programsList" class="programs-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Eventos Especiales -->
+                    <div class="tab-content" id="eventos">
+                        <div class="card">
+                            <h3>Nuevo Evento Especial</h3>
+                            <form id="eventForm" class="admin-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="eventName">Nombre del Evento</label>
+                                        <input type="text" id="eventName" name="name" class="form-control" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="eventType">Tipo de Evento</label>
+                                        <select id="eventType" name="type" class="form-control" required title="Seleccionar tipo de evento">
+                                            <option value="">Seleccionar tipo</option>
+                                            <option value="aniversario">Aniversario del Grupo</option>
+                                            <option value="promesa">Ceremonia de Promesa</option>
+                                            <option value="investidura">Investidura</option>
+                                            <option value="fundraising">Evento de Recaudación</option>
+                                            <option value="comunitario">Evento Comunitario</option>
+                                            <option value="intercambio">Intercambio con otros grupos</option>
+                                            <option value="competencia">Competencia/Rally</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="eventStartDate">Fecha de Inicio</label>
+                                    <input type="date" id="eventStartDate" name="startDate" class="form-control" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="eventEndDate">Fecha de Fin</label>
+                                    <input type="date" id="eventEndDate" name="endDate" class="form-control" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="eventBudget">Presupuesto Estimado</label>
+                                    <input type="number" id="eventBudget" name="budget" class="form-control" min="0" step="0.01" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="eventLocation">Ubicación</label>
+                                    <input type="text" id="eventLocation" name="location" class="form-control" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="eventDescription">Descripción</label>
+                                    <textarea id="eventDescription" name="description" class="form-control" rows="3" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="eventParticipants">Participantes Esperados</label>
+                                    <input type="number" id="eventParticipants" name="expectedParticipants" class="form-control" min="1" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="eventCoordinator">Coordinador Principal</label>
+                                    <input type="text" id="eventCoordinator" name="coordinator" class="form-control" required />
+                                </div>
+                                <button type="submit" class="btn btn-primary">Crear Evento</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>Eventos Programados</h3>
+                            <div class="events-timeline">
+                                <div class="timeline-controls">
+                                    <label for="eventTimeFilter" class="sr-only">Filtrar por tiempo de evento</label>
+                                    <select id="eventTimeFilter" class="form-control" aria-label="Filtrar por tiempo de evento" title="Filtrar por tiempo de evento" name="eventTimeFilter">
+                                        <option value="upcoming">Próximos Eventos</option>
+                                        <option value="current">Eventos Actuales</option>
+                                        <option value="past">Eventos Pasados</option>
+                                        <option value="all">Todos los Eventos</option>
+                                    </select>
+                                </div>
+                                <div id="eventsList" class="events-list"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Campamentos -->
+                    <div class="tab-content" id="campamentos">
+                        <div class="card">
+                            <h3>Nuevo Campamento</h3>
+                            <form id="campForm" class="admin-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="campName">Nombre del Campamento</label>
+                                        <input type="text" id="campName" name="name" class="form-control" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="campType">Tipo de Campamento</label>
+                                        <select id="campType" name="type" class="form-control" required title="Seleccionar tipo de campamento">
+                                            <option value="">Seleccionar tipo</option>
+                                            <option value="grupo">Campamento de Grupo</option>
+                                            <option value="seccion">Campamento de Sección</option>
+                                            <option value="distrito">Campamento de Distrito</option>
+                                            <option value="nacional">Campamento Nacional</option>
+                                            <option value="internacional">Campamento Internacional</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="campStartDate">Fecha de Inicio</label>
+                                    <input type="date" id="campStartDate" name="startDate" class="form-control" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="campEndDate">Fecha de Fin</label>
+                                    <input type="date" id="campEndDate" name="endDate" class="form-control" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="campCapacity">Capacidad Máxima</label>
+                                    <input type="number" id="campCapacity" name="capacity" class="form-control" min="1" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="campLocation">Ubicación</label>
+                                    <input type="text" id="campLocation" name="location" class="form-control" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="campCost">Costo por Participante</label>
+                                    <input type="number" id="campCost" name="cost" class="form-control" min="0" step="0.01" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="campTheme">Tema del Campamento</label>
+                                    <input type="text" id="campTheme" name="theme" class="form-control" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="campObjectives">Objetivos</label>
+                                    <textarea id="campObjectives" name="objectives" class="form-control" rows="3" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="campProgram">Programa de Actividades</label>
+                                    <textarea id="campProgram" name="program" class="form-control" rows="4" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="campEquipment">Equipamiento Requerido</label>
+                                    <textarea id="campEquipment" name="equipment" class="form-control" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="campChief">Jefe de Campamento</label>
+                                    <input type="text" id="campChief" name="chief" class="form-control" required />
+                                </div>
+                                <button type="submit" class="btn btn-primary">Programar Campamento</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h3>Campamentos Programados</h3>
+                            <div class="camps-list">
+                                <div class="camps-filters">
+                                    <select id="campStatusFilter" class="form-control" title="Filtrar por estado de campamento">
+                                        <option value="">Todos los estados</option>
+                                        <option value="planning">En Planificación</option>
+                                        <option value="registration">Inscripciones Abiertas</option>
+                                        <option value="confirmed">Confirmado</option>
+                                        <option value="completed">Completado</option>
+                                        <option value="cancelled">Cancelado</option>
+                                    </select>
+                                    <select id="campTypeFilter" class="form-control" title="Filtrar por tipo de campamento">
+                                        <option value="">Todos los tipos</option>
+                                        <option value="grupo">Campamento de Grupo</option>
+                                        <option value="seccion">Campamento de Sección</option>
+                                        <option value="distrito">Campamento de Distrito</option>
+                                        <option value="nacional">Campamento Nacional</option>
+                                        <option value="internacional">Campamento Internacional</option>
+                                    </select>
+                                </div>
+                                <div id="campsList" class="camps-grid"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Grupo Scout. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="../../js/utils.js"></script>
+    <script type="module" src="../../js/storage.js"></script>
+    <script type="module" src="../../js/navigation.js"></script>
+    <script type="module" src="../../js/admin/planificacion.js"></script>
+</body>
+</html>
