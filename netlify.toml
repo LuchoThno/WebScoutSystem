@@ -2,4 +2,7 @@
   command = "npm run build"
   publish = ".next"
 
+[context.production.environment]
+  RUBY_VERSION = "2.7.4"
+
 # Removed @netlify/plugin-nextjs plugin to avoid build errors for Vite project
