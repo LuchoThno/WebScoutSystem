@@ -1,12 +1,13 @@
-{
+ {
   "name": "grupo-scout",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "preview": "next start"
   },
   "dependencies": {
     "chart.js": "^4.4.1",
@@ -17,7 +18,5 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
-  "devDependencies": {
-    "vite": "^6.3.5"
-  }
+  "devDependencies": {}
 }

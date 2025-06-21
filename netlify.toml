@@ -1,5 +1,5 @@
 [build]
   command = "npm run build"
-  publish = "dist"
+  publish = ".next"
 
 # Removed @netlify/plugin-nextjs plugin to avoid build errors for Vite project
